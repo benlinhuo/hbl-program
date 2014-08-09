@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>front.js例子1</title>
+    <style type="text/css">
+        body { font-family: Georgia, serif; }
+        h2, h3, p, div, ul { margin: 10px; padding: 0; overflow: hidden; }
+        .person { border: 1px solid #ccc; margin: 5px; padding: 5px 10px; width: 200px; float: left; }
+    </style>
+</head>
+<body>
+    <h2>demo 1: simple</h2>
+    <div id="target1"></div>
+    <h2>demo 2: auto iteration</h2>
+    <ul id="target2"></ul>
+    <h2>demo 3: logic and deep structure</h2>
+    <ul id="target3"></ul>
+
+    <!--<script type="text/javascript" src='./front_clone/front.min.js'></script>-->
+    <script type="text/template" id='template3'>
+        <li class="person">
+            <h3>{{name}}</h3>
+            @if{{info.age}}
+            <p>Age:{{info.age}}</p>
+            @endif
+            @if{{info.sex}}
+            <p>Sex:{{info.sex}}</p>
+            @if{{info.job.Fulltime}}
+            <p>Full:{{info.job.Fulltime}}</p>
+            @else
+            <p>Available for hire</p>
+            @endif
+            @if{{info.job.parttime}}
+            <p>Parttime:{{info.job.parttime}}</p>
+            @endif
+        </li>
+    </script>
+    <script type="text/javascript">
+        var targetNode1 = document.getElementById('target1');
+        var targetNode2 = document.getElementById('target2');
+        var targetNode3 = document.getElementById('target3');
+
+        var template1 = '<div><h3>{{name}}</h3><p>Age:{{info.age}}</p><p>Sex:{{info.sex}}</p><p>Job:{{info.Job}}</p></div>';
+        var template2 = '<li class="person"><h3>{{name}}</h3><p>Age:{{age}}</p><p>Sex:{{sex}}</p><p>job:{{job}}</p></li>';
+        var template3 = document.getElementById('template3').innerHTML;
+
+        var template3 = '<h3>{{name}}</h3>@if{{info.job.Fulltime}}<p>Full:{{info.job.Fulltime}}</p>@else<p>Available for hire</p>@endif';
+
+        var sourceData1 = {name: 'John', info:{age: 24, sex: '女', job: 'Web Engine'}};
+        var sourceData2 = [{name: 'Alise1111', age: 32, sex: '男', job: 'teacher'},
+                           {name: 'Alise2222', age: 12, sex: '男', job: 'student'},
+                           {name: 'Alise3333', age: 78, sex: '男', job: 'old man'}];
+
+        var sourceData3 = [{name: 'Ason111', info: {age: 14, sex:'女', job: {Fulltime: 'full9999'}}},
+                           {name: 'Ason222', info: {age: 56, sex:'女', job: {parttime: 'part2222'}}},
+                           {name: 'Ason333', info: {age: 89, sex:'女', job: {parttime: 'part454545'}}}];
+
+        var sourceData3 = {name: 'Ason111', info: {job: {Fulltime: 'full9999'}}};
+
+//        front(template1, sourceData1, targetNode1);
+//        front(template2, sourceData2, targetNode2);
+        front(template3, sourceData3, targetNode3);
+
+
+        function front(templateString, sourceData, targetNode) {
+
+            // ES5 strict mode
+            "use strict";
+
+            var dataArray = Array.isArray(sourceData) ? sourceData : [sourceData];  // Wrap source data for auto iteration.
+            var htmlString = "";
+
+            // Retrieve data in an object through the path.
+            var retrieveSource = function(sourceObject, dataPath)     {
+                var keys = dataPath.split('.');
+                var source = sourceObject;
+                var key;
+                // Drill down the path.
+                while(keys.length) {
+                    key = keys.shift();
+                    if(typeof source === 'object' && key in source) {
+                        source = source[key];
+                    } else {
+                        // Path doesn't exist anymore.
+                        return false;
+                    }
+                }
+                return source;
+            };
+
+            // Fill data into the template.
+            dataArray.forEach(function(data) {
+                // Deal with logic, get the logicless template to fill data.
+                var template = templateString.replace(/@if\{\{([\w\s-_\.]+)\}\}([\s\S]+?)(@else([\s\S]+?))?@endif/g, function($, $1, $2, $3, $4) {
+                    // @if statement exists and equals to true, return content in @if block.
+                    // @if statement exists and equals to false, and @else statement exists, return content in @else block.
+                    // @if statement exists and equals to false, but @else statement doesn't exist, return empty string.
+                    return retrieveSource(data, $1) ? $2 : ($3 ? $4 : "");
+                });
+
+                // Fill data into template.
+                htmlString += template.replace(/\{\{([\w\s-_\.]+)\}\}/g, function($, $1) {
+                    // Skip it if data object doesn't have that key.
+                    return retrieveSource(data, $1) || $;
+                });
+            });
+
+            // If target node is provided, append the HTML string to it. Otherwise return the HTML string.
+            if(targetNode) {
+                targetNode.innerHTML = htmlString;
+            } else {
+                return htmlString;
+            }
+
+        }
+
+        // force.js module definition.
+        if(typeof define === "function" && define.amd) {
+            define('front.js/front', [], function() {
+                return { render: front };
+            });
+        }
+
+    </script>
+</body>
+</html>
