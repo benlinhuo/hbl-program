@@ -1,0 +1,17 @@
+#写一个脚本，可以根据参数文件名，以正确的参数调用tar来解压缩tar.gz或tar.bz2文件。
+#/bin/sh
+
+echo "please input a filename:[*.tar.gz|*.tar.bz2]"
+read filename
+case $filename in
+    *.tar.gz)
+        echo "this is a 'tar.gz' file"
+#相当于break
+        ;;
+    *.tar.bz2)
+        echo "this is a 'tar.bz2' file"
+        ;;
+    *)
+        echo "no match!"
+        exit 1;
+esac

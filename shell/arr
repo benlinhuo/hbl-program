@@ -1,0 +1,25 @@
+arr=(张三 李四 王五)
+#遍历一
+for val in ${arr[@]}
+do 
+    echo $val
+done
+echo "遍历1end"
+echo "#################"
+
+#遍历二(数组下标)
+for i in “${!arr[@]}”
+do 
+    echo "下标：$i"
+    echo "对应的value：${arr[$i]}"
+done
+echo "数组下标遍历end"
+echo "################"
+
+#遍历三（while）
+i=1
+while test $i -lt ${#arr[@]}
+do
+    echo "${arr[$i]}"
+    let i++
+done

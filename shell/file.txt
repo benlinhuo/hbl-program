@@ -1,0 +1,11 @@
+total 72
+-rwxr-xr-x  1 benlinhuo  staff  296  8  5 08:11 example01
+-rwxr-xr-x  1 benlinhuo  staff  407  8  5 08:22 example03
+-rwxr-xr-x  1 benlinhuo  staff  273  8  5 08:43 example04
+-rwxr-xr-x  1 benlinhuo  staff  406  8  5 07:53 example1
+-rw-r--r--  1 benlinhuo  staff   20  8  5 07:49 example2
+-rwxr-xr-x  1 benlinhuo  staff  101  8  5 08:47 example4
+-rwxr-xr-x  1 benlinhuo  staff  402  8  8 07:28 example5
+-rw-r--r--  1 benlinhuo  staff    0  8  8 07:29 file.txt
+-rw-r--r--  1 benlinhuo  staff    2  8  8 07:27 string.txt
+-rwxr-xr-x  1 benlinhuo  staff  195  8  5 08:10 testbreak

@@ -1,0 +1,12 @@
+unset num
+while test "$num" != "end"
+do 
+    echo "Input a number:"
+    read num
+    if test "$num" = "end"
+    then
+        echo "I am break"
+        break
+    fi
+    echo "number is $num"
+done

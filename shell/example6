@@ -1,0 +1,11 @@
+#编写一个shell脚本，它把第二个位置参数及其以后的各个参数指定的文件复制到第一个位置参数指定的目录中。
+
+#!/bin/sh
+dir=$1
+shift
+while [ $1 ]
+do 
+    cp $1 $dir
+    shift
+done
+ls $dir

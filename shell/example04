@@ -1,0 +1,11 @@
+#利用循环计算10的阶乘
+#/bin/sh
+
+factorial=1
+
+#在shell脚本文件中如果想要使用某个命令的输出结果，则需要符号``,`seq 1 10`也可以用｛1，10｝
+for i in `seq 1 10`
+do
+    factorial=`expr $factorial \* $i`
+done
+    echo "10! = $factorial"

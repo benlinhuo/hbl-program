@@ -1,0 +1,8 @@
+#/bin/sh
+fa=1
+endnum=4
+for i in `seq 1 $endnum`
+do
+    fa=`expr $fa \* $i`
+done
+echo "result is $fa"

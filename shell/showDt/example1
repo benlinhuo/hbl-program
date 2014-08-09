@@ -1,0 +1,14 @@
+#写一个脚本，执行后，打印一行提示“Please input a number:"，要求用户输入数值，然后打印出该数值，然后再次要求用户输入数值。直到用户输入"end"停止。
+
+#/bin/sh
+
+until
+    echo "-------------------";
+    echo "Please input a number";
+#将输入的值放到变量x中
+    read x;
+#以下或者使用[ $x = 'end' ]
+    test $x = end;
+do
+    echo $x;
+done

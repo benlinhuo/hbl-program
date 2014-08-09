@@ -1,0 +1,9 @@
+#编写一个shell脚本，利用for循环将当前目录下的.c文件移动到指定的目录，并按文件大小显示出移动后指定的目录的内容
+
+#!/bin/sh
+
+for file in *.c
+do
+    cp $file $1
+done
+ls -l $1
