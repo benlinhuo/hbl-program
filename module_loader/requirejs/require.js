@@ -2080,6 +2080,3 @@ var requirejs, require, define;
 }(this));
 
 
-问题：
-1.函参的顺序应与依赖顺序保存一致。
-2.CommonJs 与define兼容
