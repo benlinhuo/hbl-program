@@ -1,0 +1,83 @@
+总结：
+
+1、使用baseUrl来配置模块根目录，baseUrl可以是绝对路径也可以是相对路径。
+
+2、使用define定义一个函数类型模块，RequireJS的模块可以是JS对象，函数或其它任何类型（CommonJS/SeaJS则只能是JS对象）。
+即返回的可以是{},或者函数等
+
+总结：
+当一个模块依赖（a）于另一个模块（b）时，定义该模块时的第一个参数为数组，数组中的模块名（字符串类型）就是它所依赖的模块。
+当有多个依赖模时，须注意回调函数的形参顺序得和数组元素一一对应。此时requirejs会自动识别依赖，且把它们都下载下来后再进行回调。
+
+require.js要求，每个模块是一个单独的js文件。这样的话，如果加载多个模块，就会发出多次HTTP请求，会影响网页的加载速度。因此，require.js提供了一个优化工具，当模块部署完毕以后，可以用这个工具将多个模块合并在一个文件中，减少HTTP请求数。
+
+
+http://www.cnblogs.com/snandy/archive/2012/05/22/2513652.html
+
+
+##########################
+
+1. 源码：http://www.cnblogs.com/yexiaochai/p/3632580.html
+
+
+#############################
+main.js如下
+
+require.config({
+    paths: {
+        jquery: 'jquery-1.7.2'
+    }
+});
+ 
+require(['jquery'], function($) {
+    alert($().jquery);
+});
+
+####################################################
+require.config({
+    baseUrl: 'js'
+});
+ 
+require(['selector'], function(query) {
+    var els = query('.wrapper');
+    console.log(els)
+});
+
+
+
+###################################################
+require.config({
+    baseUrl: 'js'
+});
+ 
+require(['selector', 'event'], function($, E) {
+    var els = $('p');
+    for (var i=0; i<els.length; i++) {
+        E.bind(els[i], 'click', function() {
+            alert(this.innerHTML);
+        });
+    }
+});
+
+###################################################
+举例来说，underscore和backbone这两个库，都没有采用AMD规范编写。如果要加载它们的话，必须先定义它们的特征。
+　　require.config({
+　　　　shim: {
+
+　　　　　　'underscore':{
+　　　　　　　　exports: '_'
+　　　　　　},
+　　　　　　'backbone': {
+　　　　　　　　deps: ['underscore', 'jquery'],
+　　　　　　　　exports: 'Backbone'
+　　　　　　}
+　　　　}
+　　});
+require.config()接受一个配置对象，这个对象除了有前面说过的paths属性之外，还有一个shim属性，专门用来配置不兼容的模块。具体来说，每个模块要定义（1）exports值（输出的变量名），表明这个模块外部调用时的名称；（2）deps数组，表明该模块的依赖性。
+
+####################################################
+domready插件，可以让回调函数在页面DOM结构加载完成后再运行。
+
+　require(['domready!'], function (doc){
+　　　　// called once the DOM is ready
+　　});

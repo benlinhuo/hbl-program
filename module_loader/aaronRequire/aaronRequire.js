@@ -126,6 +126,7 @@
             }
 
             //接口点，将数据或方法定义在其上则将其暴露给外部调用。
+            //初始化当前module的接口
             module.exports = {};
 
             //去重
@@ -133,11 +134,26 @@
 
             if (module['deps']) {
                 //依赖数组列表
+                /*
+                    define('c', ['a', 'b'], function(a, b) {
+                        console.log(a, '1111111');
+                        console.log(b, '2222222');
+                        return 'cccccccc';
+                    });
+                    以上因为依赖于['a', 'b']，将通过函数parseDeps()将每个依赖模块的最后return结果存储，即depsList内容
+                    depsList作为参数可供callback执行使用，其时，此时的depsList就是[a,b]
+                */
                 depsList = parseDeps(module);
                 module.exports = factory.apply(module, depsList);
             } else {
                 // exports 支持直接 return 或 modulejs.exports 方式
                 // 返回的是callback执行的结果，如返回一个函数或对象，只不过为了兼容CMD方式，用exports包装了下
+                /* 例：
+                    define('a', function() {
+                        return 'aaaaaa';
+                    });
+                    执行后，module.exports='aaaaaa';//等于return后面的内容
+                */
                 module.exports = factory(exp.require, module.exports, module) || module.exports;
             }
 
@@ -150,12 +166,14 @@
         //当依赖的模块个数>=2的时候，使用该函数处理
         function makeRequire(ids, callback) {
             var r = ids.length,
-                shim = {};
+                shim = [];
             each(ids, function(name) {
-                shim[name] = build(modules[name])
+                // shim[name] = build(modules[name]);
+                shim.push(build(modules[name]));
             })
             if (callback) {
-                callback.call(null, shim);
+                // callback.call(null, shim);
+                callback.apply(null, shim);
             } else {
                 shim = null;
             }
@@ -164,4 +182,54 @@
         return exp;
     }());
 
-1. 它没有通过script标签去请求对应模块的文件，这边该问题该怎么解决？
+
+define('a', function() {
+    return 'aaaaaa';
+});
+
+define('b', function() {
+    return 'bbbbbbbbbb';
+});
+
+define('c', ['a', 'b'], function(a, b) {
+    console.log(a, '1111111');
+    console.log(b, '2222222');
+    return 'cccccccc';
+});
+
+// require('c', function(c) {
+//     console.log(c);
+// });
+
+//#####################################################################################
+//以下输出结果：
+/*
+aaaaaa 1111111 
+bbbbbbbbbb 2222222 
+
+原因是：当我们引入c模块的时候，会自动载入a和b模块，因为引入c模块的require没有callback，
+所以会自动执行define的c模块，即c模块的callback
+*/
+// require('c');
+
+
+//#####################################################################################
+//以下会执行makeRequire函数
+/*
+执行结果：
+aaaaaa require21 
+bbbbbbbbbb require22 
+
+源码有bug，总共改了makeRequire函数中3个地方，原先的shim是{}。
+按照原先的代码，执行结果如下：
+Object {a: "aaaaaa", b: "bbbbbbbbbb"} "require21" 
+undefined "require22" 
+这是有问题的
+*/
+require(['a', 'b'], function(a, b) {
+    console.log(a, 'require21');
+    console.log(b, 'require22');
+});
+
+
+
