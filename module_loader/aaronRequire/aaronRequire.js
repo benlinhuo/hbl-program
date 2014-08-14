@@ -154,6 +154,16 @@
                     });
                     执行后，module.exports='aaaaaa';//等于return后面的内容
                 */
+                /*
+                define('c', function(require, exports, module) {
+                    var a = require('a')
+                    var b = require('b');
+                    console.log(a,b)
+                    //执行代码
+                    return 'ccccccccc'
+                });
+                CMD的写法：此种方案：一定是将依赖模块的requrie放到callback中的。
+                */
                 module.exports = factory(exp.require, module.exports, module) || module.exports;
             }
 
