@@ -21,7 +21,7 @@ var requirejs, require, define;
         ostring = op.toString,
         hasOwn = op.hasOwnProperty,
         ap = Array.prototype,
-        apsp = ap.splice,
+        apsp = ap.splice,  
         isBrowser = !!(typeof window !== 'undefined' && typeof navigator !== 'undefined' && window.document),
         isWebWorker = !isBrowser && typeof importScripts !== 'undefined',
         //PS3 indicates loaded and complete, but need to wait for complete
@@ -558,8 +558,10 @@ var requirejs, require, define;
                 //Array splice in the values since the context code has a
                 //local var ref to defQueue, so cannot just reassign the one
                 //on context.
-                apsp.apply(defQueue,
-                           [defQueue.length, 0].concat(globalDefQueue));
+                //apsp = Array.prototype.splice
+                //向defQueue数组的后面添加globalDefQueue内容
+                apsp.apply(defQueue, [defQueue.length, 0].concat(globalDefQueue));
+
                 globalDefQueue = [];
             }
         }
@@ -1217,10 +1219,12 @@ var requirejs, require, define;
             };
         }
 
+        //Grab defines waiting in the global queue.
         function intakeDefines() {
             var args;
 
             //Any defined modules in the global queue, intake them now.
+            //将globalDefQueue中拿到defQueue中，并且将globalDefQueue置空
             takeGlobalQueue();
 
             //Make sure any remaining defQueue items get properly processed.
@@ -1741,9 +1745,17 @@ var requirejs, require, define;
         }
 
         if (config) {
+            //script加载入口文件，是从config走的，下面的return context.require(deps, callback, errback);deps==[],不会做什么特殊动作
+            /*
+            if (cfg.deps || cfg.callback) {
+                    context.require(cfg.deps || [], cfg.callback);
+                }
+            以上代码，是在configure最后的执行
+            */
             context.configure(config);
         }
 
+        //因为context.require = context.makeRequire();而该函数本身又返回localRequire函数，所以事实上这里是执行的localRequire函数，内部维护着一个闭包
         return context.require(deps, callback, errback);
     };
 

@@ -3,9 +3,21 @@
 <head>
     <title>aaronRequireJS</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <script type='text/javascript' src='../../require.js' data-main='../app.js'></script>
+    <script type='text/javascript' src='../require.js' data-main='../www/js/app.js'></script>
 </head>
 <body>
 	<div>require.js的运用实例</div>
 </body>
 </html>
+
+
+
+<!-- 
+
+<script type='text/javascript' src='../require.js' data-main='../www/js/app.js'></script>
+以上这句，在解析以后，还会最后调用一次req(cfg);cfg={baseUrl:'../wwww/js/'，deps:[app]}
+
+
+
+
+ -->
