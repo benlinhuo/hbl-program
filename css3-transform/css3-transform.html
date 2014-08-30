@@ -1,0 +1,189 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>SlidesJS Basic Code Example</title>
+  <style>
+    #tags {
+      position: fixed;
+      right: 100px;
+      top: 50%;
+    }
+
+    .tag {
+      background: red;
+      height: 20px;
+      line-height: 15px;
+      width: 20px;
+      list-style: none;
+      text-align: center;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    .tag span {
+      width: 5px;
+      height: 5px;
+      display: inline-block;
+      border-radius: 50%;/*当高宽都相同时变成圆形*/
+      background-color: #d4d4d5;
+    }
+
+    .currTag {
+      line-height: 16px;
+    }
+
+    .currTag span {
+      background: none;
+      border: 2px solid #d4d4d5;
+      transform: scale(1.2);
+    }
+
+    .section {
+      /*width: 1080px;
+      margin: 0 auto;*/
+    }
+
+    .section img {
+      width: 1080px;
+      margin: 0 auto;
+      display: inherit;
+    }
+
+    #container {
+      transition: all 1s cubic-bezier(.86, 0, .07, 1);
+      transform: translate3d(0px, 0px, 0px);
+        width: 100%;
+    }
+
+    #containerDiv {
+        overflow: hidden;
+    }
+
+      body {
+          margin: 0;
+          padding: 0;
+      }
+
+  </style>
+</head>
+<body>
+<div id='containerDiv'>
+    <div id="container" index='0'>
+          <div class="section section-0" style="background-color: #DFDFDF;">
+              <img src="2.jpg" />
+          </div>
+          <div class="section section-1" style="background-color: #BCBCBC;">
+              <img src="1.jpg" />
+          </div>
+          <div class="section section-2" style="background-color: #DFDFDF;">
+              <img src="3.jpg" />
+          </div>
+    </div>
+</div>
+  <div id="tags">
+    <li class="tag tag-0 currTag" index='0 '>
+      <span></span>
+    </li>
+    <li class="tag tag-1" index='1'>
+      <span></span>
+    </li>
+    <li class="tag tag-2" index='2'>
+      <span></span>
+    </li>
+  </div>
+  <script src="jquery-1.11.1.js"></script>
+  <script>
+
+  (function() {
+
+    var sections = $('.section');
+    var container = $('#container');
+    var wrapContainer = $('#containerDiv');
+    function init() {
+        resize();
+        bindEvent();
+    }
+
+    init();
+
+    function bindEvent() {
+      var scrollOpen = false, index = 0;
+      var agent = getAgent(), dir = 1;//dir表示滚动的方向，1为向后，0为向前
+      var tags = $('.tag');
+
+        $(window).on('resize', function() {
+            resize();
+        });
+
+      var scrollFn = function(e) {
+          if (!scrollOpen) {
+              scrollOpen = true;
+              //
+              index = container.attr('index') * 1;
+              dir = agent ? (e.detail > 0 ? 1 : 0) : (e.wheelDelta > 0 ? 0 : 1);
+              dir ? index += 1  : index -= 1;
+              if (index > 2 || index < 0) {
+                  setTimeout(function() {
+                      scrollOpen = false;
+                  },1000);
+//              scrollOpen = false;
+                  return;
+              }
+
+              change(index);
+
+              setTimeout(function() {
+                  scrollOpen = false;
+              }, 1000);
+//          scrollOpen = false;
+          }
+      };
+      agent ? document.addEventListener('DOMMouseScroll', scrollFn, false) : document.onmousewheel = scrollFn;
+//      $(document).on('scroll', function(e) {
+//          //其中的e是没有detail或者wheelDelta属性的
+//          //即使scroll分浏览器变成DOMMouseScroll（firefox）或mousewheel，也没有以上两个属性。所以改用上述的方案
+//      });
+
+      tags.each(function(ele) {
+          $(this).on('click', function() {
+              var index = $(this).attr('index');
+              change(index);
+          })
+      });
+
+      function change(index) {
+          container.attr('index', index);
+          //按钮变化
+          $('.currTag').removeClass('currTag');
+          $('.tag-' + index).addClass('currTag');
+          //内容变化
+          changeContent(container, index);
+      }
+    }
+
+    function resize() {
+        var h = document.documentElement.clientHeight;
+        sections.each(function(k, v) {
+            $(this).height(h);
+        });
+        wrapContainer.height(h);
+        changeContent(container, container.attr('index'));
+    }
+
+    function changeContent(container, index) {
+      var h = document.documentElement.clientHeight;
+
+      container.css('transform', 'translate3d(0px,' + (-index * h) + 'px, 0px)');
+    }
+
+    function getAgent() {
+      if (navigator.userAgent.indexOf('Firefox') > -1) {
+        return 1;
+      } 
+      return 0;
+    }
+  })();
+  </script>
+</body>
+</html>
