@@ -31,7 +31,7 @@ http.createServer(function(req, res) {
                 });
                 break;
 
-          
+
         }
 
     } else if (req.method === 'POST') {

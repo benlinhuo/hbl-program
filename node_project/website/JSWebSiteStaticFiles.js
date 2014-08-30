@@ -23,7 +23,7 @@ http.createServer(function(req, res){
         }
 
     } else {
-        console.log('Not Supported')!
+        console.log('Not Supported!');
     }
 
 
