@@ -1,0 +1,19 @@
+<html>
+	<head>
+		<script type="text/javascript" src='avalon.js'></script>>
+	</head>
+	<body>
+		<p ms-controller="hbl-model">
+			wo shi {{name}},
+			her age is {{age}},
+			her des is {{des}}
+		</p>
+		<script type="text/javascript">
+			var model = avalon.define('hbl-model',function(vm) {
+				vm.name = 'benlinhuo';
+				vm.age = 121;
+				vm.des = 'hao ren yi mei';
+			});
+		</script>
+	</body>
+</html>

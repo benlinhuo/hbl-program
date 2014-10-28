@@ -1,0 +1,55 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+		<script type="text/javascript" src='avalon.js'></script>
+		<script type="text/javascript" src='../../jquery-1.11.1.js'></script>		
+	</head>
+	<body>
+		<div class="title">
+			<h1>Avalon Learning Blog</h1>
+			<p>带你快速走进Avalon的世界</p>
+		</div>
+		<div class="content" ms-controller="blog">
+			<h2>{{blog.subject}}</h2>
+			<p>{{blog.author}}.{{blog.publish_date|date('yyyy-MM-dd')}}.{{blog.comment_count}}</p>
+			<hr/>
+			<p>{{blog.content|html}}</p>
+		</div>	
+		<!-- 这里只有几点要提示：
+		单独定义了一个 ms-controller="comments" ，在一个HTML页面中可以有多个 controller
+		使用 ms-repeat=comments 来进行数据循环，详细说明在下面
+		使用 {{comments.size()}} ，这里不使用 comments.length 是因为当数组长度 变化时，只有 size() 会引起页面重新进行渲染。
+		el 是 ms-repeat 自动生成的循环变量
+		ms -->-src 因为头像的图片地址是要使用变量，所以要将 src 属性改为 ms-src	
+		<div class="comments" ms-controller='comments'>
+			<!-- 使用size，而不是length，是因为当comments.length变化时，size()可以实时获取，而length不会 -->
+			<h1>Comments Size: {{comments.size()}}</h1>
+			<div ms-repeat='comments'>
+				<!-- 如果是属性，则不需要{{}}，直接el.xx即可。而且默认的循环每条数组数据是el -->
+				<img ms-src='el.avatar' />
+				<div ms-id="el.id">
+					<p><span>{{el.author}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>{{el.date}}</span></p>
+					<p>{{el.content|html}}</p>
+				</div>
+				<hr/>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var blogM = avalon.define('blog', function(vm) {
+				vm.blog = {};
+			});
+
+			var commentM = avalon.define('comments', function(vm) {
+				vm.comments = {};
+			});
+
+			var blog = {"subject": "Blog Title","author": "张三","publish_date": "2014/3/15","comment_count": 0,"content": "<h2>这是一个测试的博客</h2><p>这是内容 1</p><p>这是内容 2</p><p>这是内容 3</p><p>这是内容 4</p>"};
+
+			var comment = [{"id":1,"author":"Dog Doggington","date":"2 days ago","content":"I think this is a great idea and i am voting on it","avatar":"./avatar.jpg"},{"id":2,"author":"Pawfin Dog","date":"2 days ago","content":"I think this is a great idea and i am voting on it","avatar":"./avatar2.jpg"},{"id":3,"author":"Dog Doggington","date":"2 days ago","content":"I think this is a great idea and i am voting on it","avatar":"./avatar.jpg"}];
+
+			blogM.blog = blog;
+			commentM.comments = comment;			
+			
+		</script>
+	</body>
+</html>

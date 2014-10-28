@@ -1,0 +1,73 @@
+<!-- <html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+		<script type="text/javascript" src='avalon.js'></script>
+	</head>
+	<body>
+		<div class="title">
+			<h1>Avalon Learning Blog</h1>
+			<p>带你快速走进Avalon的世界</p>
+		</div>
+		<div class="content" ms-controller="blog">
+			<h2>{{subject}}</h2>
+			<p>{{author}}.{{publish_date}}.{{comment_count}}</p>
+			<hr/>
+			<p>{{content}}</p>
+		</div>		
+		<script type="text/javascript">
+			var model = avalon.define('blog', function(vm) {
+				vm.subject = 'Blog Title';
+				vm.author = '张三';
+				vm.publish_date = new Date('2014/3/15');
+				vm.comment_count = 12;
+				vm.content = '<h2>这是一个测试的博客</h2>' +
+					'<p>这是内容1</p>' +
+					'<p>这是内容2</p>' +
+					'<p>这是内容3</p>' +
+					'<p>这是内容4</p>';
+			});
+		</script>
+	</body>
+</html> -->
+
+
+
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+		<script type="text/javascript" src='avalon.js'></script>
+	</head>
+	<body>
+		<div class="title">
+			<h1>Avalon Learning Blog</h1>
+			<p>带你快速走进Avalon的世界</p>
+		</div>
+		<div class="content" ms-controller="blog">
+			<h2>{{blog.subject}}</h2>
+			<p>{{blog.author}}.{{blog.publish_date|date('yyyy-MM-dd')}}.{{blog.comment_count|myfilter(3)}}</p>
+			<hr/>
+			<p>{{blog.content|html}}</p>
+		</div>		
+		<script type="text/javascript">
+			var model = avalon.define('blog', function(vm) {
+				vm.blog = {
+					subject: 'Blog Title1111111',
+					author: '张三',
+					publish_date: new Date('2014/3/15'),
+					comment_count: 12,
+					content: '<h2>这是一个测试的博客</h2>' +
+						'<p>这是内容1</p>' +
+						'<p>这是内容2</p>' +
+						'<p>这是内容3</p>' +
+						'<p>这是内容4</p>'
+				};
+			});
+
+
+			//str是我们前面的输出结果，args1是使用该filter函数的第一个参数
+			avalon.filters.myfilter = function(str, args1) {
+				return parseInt(str + args1);
+			}
+		</script>
+	</body>
+</html>
